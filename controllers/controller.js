@@ -49,7 +49,14 @@ class Controller {
     }
   }
 
-  static async postTransaction(req, res, next) {}
+  static async postTransaction(req, res, next) {
+    try {
+      
+    } catch (err) {
+      console.log(err);
+      next(err);
+    }
+  }
 
   static async getReport(req, res, next) {}
 
