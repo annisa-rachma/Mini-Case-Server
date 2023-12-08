@@ -28,7 +28,26 @@ class Controller {
     }
   }
 
-  static async getAccountDetail(req, res, next) {}
+  static async getAccountDetail(req, res, next) {
+    try {
+      const user = await Account.findOne({
+        where : {CustomerId: req.user.id},
+        include: [
+          {
+            model: Customer,
+            attributes: {
+              exclude: ["createdAt", "updatedAt", "password"],
+            },
+          },
+        ],
+      })
+
+      res.status(200).json(user);
+    } catch (err) {
+      console.log(err);
+      next(err);
+    }
+  }
 
   static async postTransaction(req, res, next) {}
 
