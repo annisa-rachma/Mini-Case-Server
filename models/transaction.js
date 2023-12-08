@@ -4,24 +4,21 @@ const {
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Transaction extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
-      // define association here
+      Transaction.belongsTo(models.Account, {foreignKey : "AccountId", onDelete: 'CASCADE', onUpdate: 'CASCADE'})
+      Transaction.hasOne(models.Report, {foreignKey: "TransactionId"})
     }
   }
   Transaction.init({
     id: DataTypes.UUID,
+    AccountId:DataTypes.UUID,
     transactionType: DataTypes.STRING,
     transactionDetail: DataTypes.STRING,
     fromAccountNo: DataTypes.STRING,
     toAccountNo: DataTypes.STRING,
     amount: DataTypes.BIGINT,
     currency: DataTypes.STRING,
-    destinationBankCode: DataTypes.STRING
+    destinationBankCode: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'Transaction',

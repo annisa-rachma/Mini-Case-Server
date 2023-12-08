@@ -2,39 +2,41 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Payments', {
+    await queryInterface.createTable('Accounts', {
       id: {
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
       },
-      id: {
-        type: Sequelize.UUID
+      accountNo: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true
       },
-      transactionType: {
+      PIN: {
         type: Sequelize.STRING
       },
-      transactionDetail: {
+      CustomerId: {
+        type: Sequelize.UUID,
+        references: {
+          model: {
+            tableName: 'Customers'
+          },
+          key: 'id'
+        },
+        allowNull: false,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+      },
+      accountType: {
         type: Sequelize.STRING
       },
-      fromAccountNo: {
+      accountStatus: {
         type: Sequelize.STRING
       },
-      toAccountNo: {
-        type: Sequelize.STRING
-      },
-      amount: {
+      balance: {
         type: Sequelize.BIGINT
-      },
-      currency: {
-        type: Sequelize.STRING
-      },
-      customerNo: {
-        type: Sequelize.STRING
-      },
-      CompanyId: {
-        type: Sequelize.UUID
       },
       createdAt: {
         allowNull: false,
@@ -47,6 +49,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Payments');
+    await queryInterface.dropTable('Accounts');
   }
 };
