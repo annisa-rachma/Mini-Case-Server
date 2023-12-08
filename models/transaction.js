@@ -15,10 +15,33 @@ module.exports = (sequelize, DataTypes) => {
     transactionType: DataTypes.STRING,
     transactionDetail: DataTypes.STRING,
     fromAccountNo: DataTypes.STRING,
-    toAccountNo: DataTypes.STRING,
-    amount: DataTypes.BIGINT,
+    toAccountNo: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'Rekening tujuan tidak boleh kosong'
+        },
+        notEmpty: {
+          msg: 'Rekening tujuan tidak boleh kosong'
+        }
+      }
+    },
+    amount: {
+      type: DataTypes.BIGINT,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'Nominal tidak boleh nol'
+        },
+        notEmpty: {
+          msg: 'Nominal tidak boleh nol'
+        }
+      }
+    },
     currency: DataTypes.STRING,
     destinationBankCode: DataTypes.STRING,
+    fee: DataTypes.BIGINT,
   }, {
     sequelize,
     modelName: 'Transaction',

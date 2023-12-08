@@ -37,10 +37,14 @@ module.exports = {
         type: Sequelize.BIGINT
       },
       currency: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       destinationBankCode: {
         type: Sequelize.STRING
+      },
+      fee: {
+        type: Sequelize.BIGINT
       },
       createdAt: {
         allowNull: false,

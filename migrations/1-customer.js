@@ -31,14 +31,6 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      ktpNo: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      phoneNo: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

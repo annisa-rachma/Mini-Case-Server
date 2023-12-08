@@ -7,14 +7,12 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Report.belongsTo(models.Account, {foreignKey : "AccountId", onDelete: 'CASCADE', onUpdate: 'CASCADE'})
       Report.belongsTo(models.Transaction, {foreignKey : "TransactionId", onDelete: 'CASCADE', onUpdate: 'CASCADE'})
-      Report.belongsTo(models.Payment, {foreignKey : "PaymentId", onDelete: 'CASCADE', onUpdate: 'CASCADE'})
     }
   }
   Report.init({
     id: DataTypes.UUID,
     AccountId: DataTypes.UUID,
     TransactionId: DataTypes.UUID,
-    PaymentId: DataTypes.UUID,
   }, {
     sequelize,
     modelName: 'Report',

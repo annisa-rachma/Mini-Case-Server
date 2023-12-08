@@ -1,0 +1,26 @@
+[
+  {
+    "id": "f9ac35a3-11a0-4f88-b383-d452a03bdd5d",
+    "firstName": "PT ABC",
+    "lastName" : "",
+    "email" : "abc@mail.com",
+    "password" : "12345",
+    "address" : "Jalan Bunga Indah No. 123"
+  },
+  {
+    "id": "b96caa12-05b7-419a-af12-4caec25d9449",
+    "firstName": "PT DEF",
+    "lastName" : "",
+    "email" : "def@mail.com",
+    "password" : "12345",
+    "address" : "Jalan Harmoni Raya Blok C2"
+  },
+  {
+    "id": "ffc2b6e7-03dc-4fc0-83aa-a8e8ae85aa21",
+    "firstName": "PLN",
+    "lastName" : "",
+    "email" : "pln@mail.com",
+    "password" : "12345",
+    "address" : "Jl. Trunojoyo Blok M-I No.135"
+  }       
+]

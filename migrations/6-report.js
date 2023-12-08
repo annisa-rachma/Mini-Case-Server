@@ -32,17 +32,6 @@ module.exports = {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
       },
-      PaymentId: {
-        type: Sequelize.UUID,
-        references: {
-          model: {
-            tableName: 'Payments'
-          },
-          key: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
