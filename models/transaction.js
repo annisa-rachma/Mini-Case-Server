@@ -1,4 +1,6 @@
 'use strict';
+const { v4: uuidv4 } = require('uuid');
+
 const {
   Model
 } = require('sequelize');
@@ -43,6 +45,11 @@ module.exports = (sequelize, DataTypes) => {
     destinationBankCode: DataTypes.STRING,
     fee: DataTypes.BIGINT,
   }, {
+    hooks: {
+      beforeCreate: (el) => {
+        el.id = uuidv4();
+      }
+    },
     sequelize,
     modelName: 'Transaction',
   });
