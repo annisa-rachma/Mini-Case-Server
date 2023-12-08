@@ -9,7 +9,6 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Account.belongsTo(models.Customer, {foreignKey : "CustomerId", onDelete: 'CASCADE', onUpdate: 'CASCADE'})
       Account.hasMany(models.Transaction, {foreignKey: "AccountId"})
-      Account.hasMany(models.Report, {foreignKey: "AccountId"})
     }
   }
   Account.init({

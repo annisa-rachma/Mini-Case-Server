@@ -8,7 +8,6 @@ module.exports = (sequelize, DataTypes) => {
   class Transaction extends Model {
     static associate(models) {
       Transaction.belongsTo(models.Account, {foreignKey : "AccountId", onDelete: 'CASCADE', onUpdate: 'CASCADE'})
-      Transaction.hasOne(models.Report, {foreignKey: "TransactionId"})
     }
   }
   Transaction.init({

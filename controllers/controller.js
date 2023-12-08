@@ -53,7 +53,6 @@ class Controller {
     const t = await sequelize.transaction();
     try {
       const { transactionDetail, toAccountNo, amount } = req.body;
-      console.log(req.body);
 
       const account = await Account.findOne({
         where: { CustomerId: req.user.id },
