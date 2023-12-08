@@ -10,12 +10,6 @@ const errHandler = (err, req, res, next) => {
         case "InvalidEmail/Password" :
             res.status(401).json({message : "Invalid email or password"});
             break;
-        case "NotFound" :
-            res.status(404).json({message: "Product not found"})
-            break;
-        case "AdditionImageRequired" :
-            res.status(400).json({message: "Additional Image Required"})
-            break;
         case "JsonWebTokenError" :
         case "InvalidToken" : 
             res.status(401).json({message : "Invalid Token"});

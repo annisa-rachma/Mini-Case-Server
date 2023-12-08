@@ -1,4 +1,4 @@
-const { User } = require("../models");
+const { Customer } = require("../models");
 const {signToken, verifyToken } = require('../helper/jwt')
 
 const authentication = async (req, res, next) => {
@@ -7,7 +7,7 @@ const authentication = async (req, res, next) => {
         if(!access_token) throw {name : "InvalidToken"}
 
         const verify = verifyToken(access_token)
-        const user = await User.findByPk(verify.id)
+        const user = await Customer.findByPk(verify.id)
         if(!user) throw {name : "InvalidToken"}
 
         req.user = user

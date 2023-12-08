@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Transaction.init({
-    id: DataTypes.UUID,
+    // id: DataTypes.UUID,
     AccountId:DataTypes.UUID,
     transactionType: DataTypes.STRING,
     transactionDetail: DataTypes.STRING,

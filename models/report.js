@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Report.init({
-    id: DataTypes.UUID,
+    // id: DataTypes.UUID,
     AccountId: DataTypes.UUID,
     TransactionId: DataTypes.UUID,
   }, {
