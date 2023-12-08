@@ -1,0 +1,29 @@
+[
+  {
+    "id": "a9ac35a3-11a0-4f88-b383-d452a03bdd5d",
+    "accountNo": "9599211230",
+    "PIN" : "123456",
+    "CustomerId" : "f9ac35a3-11a0-4f88-b383-d452a03bdd5d",
+    "accountType" : "perusahaan",
+    "accountStatus" : "active",
+    "balance" : 0
+  },
+  {
+    "id": "c96caa12-05b7-419a-af12-4caec25d9449",
+    "accountNo": "1248210013",
+    "PIN" : "123456",
+    "CustomerId" : "b96caa12-05b7-419a-af12-4caec25d9449",
+    "accountType" : "perusahaan",
+    "accountStatus" : "active",
+    "balance" : 0
+  },
+  {
+    "id": "bfc2b6e7-03dc-4fc0-83aa-a8e8ae85aa21",
+    "accountNo": "6108261903",
+    "PIN" : "123456",
+    "CustomerId" : "ffc2b6e7-03dc-4fc0-83aa-a8e8ae85aa21",
+    "accountType" : "perusahaan",
+    "accountStatus" : "active",
+    "balance" : 0
+  }      
+]
