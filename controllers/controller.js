@@ -150,6 +150,7 @@ class Controller {
 
       res.status(200).json({
         accountNo: account.accountNo,
+        accountName: `${req.user.firstName} ${req.user.lastName}`,
         periode,
         tanggalInquiry: new Date(),
         openingBalance,
