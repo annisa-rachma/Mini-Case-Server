@@ -7,7 +7,7 @@ const {
 } = require("../models");
 const { hashPassword, comparePassword } = require("../helper/bcrypt");
 const { signToken, verifyToken } = require("../helper/jwt");
-const { Op } = require('sequelize');
+const { Op } = require("sequelize");
 
 class Controller {
   static async loginAccount(req, res, next) {
@@ -108,35 +108,59 @@ class Controller {
     }
   }
 
-  static async postPayment(req, res, next) {
-
-  }
+  static async postPayment(req, res, next) {}
 
   static async getReport(req, res, next) {
     try {
-      const startDate = req.query.startDate;
-      const endDate = req.query.endDate;
-
       const account = await Account.findOne({
         where: { CustomerId: req.user.id },
       });
-      const report = await Transaction.findAll({
+      const { startDate, endDate } = req.query;
+      let periode;
+      let option = {
         where: {
-          AccountId : account.id,
-          createdAt: {
-            [Op.between]: [startDate, endDate], 
-          },
-        }
-      })
+          AccountId: account.id,
+        },
+        order: [["createdAt", "DESC"]],
+      };
 
-      res.status(200).json(report)
+      if (startDate || endDate) {
+        periode = `${startDate} - ${endDate}`;
+        option.where.createdAt = {
+          [Op.between]: [startDate, endDate],
+        };
+      } else {
+        periode = "Semua";
+      }
+
+      const report = await Transaction.findAll(option);
+
+      let endingBalance = parseInt(account.balance);
+      let openingBalance = parseInt(account.balance);
+
+      report.forEach((transaction) => {
+        const amount = parseInt(transaction.amount);
+
+        if (transaction.transactionType === "Kredit") {
+          openingBalance -= amount;
+        } else if (transaction.transactionType === "Debet") {
+          openingBalance += amount;
+        }
+      });
+
+      res.status(200).json({
+        accountNo: account.accountNo,
+        periode,
+        tanggalInquiry: new Date(),
+        openingBalance,
+        endingBalance,
+        report,
+      });
     } catch (err) {
       console.log(err);
       next(err);
     }
   }
-
-  // static async postReport(req, res, next) {}
 }
 
 module.exports = Controller;
