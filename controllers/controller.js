@@ -7,6 +7,7 @@ const {
 } = require("../models");
 const { hashPassword, comparePassword } = require("../helper/bcrypt");
 const { signToken, verifyToken } = require("../helper/jwt");
+const { Op } = require('sequelize');
 
 class Controller {
   static async loginAccount(req, res, next) {
@@ -21,6 +22,8 @@ class Controller {
       if (!isValidPassword) throw { name: "InvalidEmail/Password" };
 
       const access_token = signToken({ id: user.id });
+
+      // console.log(access_token, '<<<dari server')
       res.status(200).json(access_token);
     } catch (err) {
       console.log(err);
@@ -111,7 +114,21 @@ class Controller {
 
   static async getReport(req, res, next) {
     try {
-      const report = await Transaction.findAll()
+      const startDate = req.query.startDate;
+      const endDate = req.query.endDate;
+
+      const account = await Account.findOne({
+        where: { CustomerId: req.user.id },
+      });
+      const report = await Transaction.findAll({
+        where: {
+          AccountId : account.id,
+          createdAt: {
+            [Op.between]: [startDate, endDate], 
+          },
+        }
+      })
+
       res.status(200).json(report)
     } catch (err) {
       console.log(err);
