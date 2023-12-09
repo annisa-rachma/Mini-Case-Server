@@ -1,4 +1,6 @@
 'use strict';
+const { v4: uuidv4 } = require('uuid');
+
 const {
   Model
 } = require('sequelize');
@@ -6,7 +8,6 @@ module.exports = (sequelize, DataTypes) => {
   class Transaction extends Model {
     static associate(models) {
       Transaction.belongsTo(models.Account, {foreignKey : "AccountId", onDelete: 'CASCADE', onUpdate: 'CASCADE'})
-      Transaction.hasOne(models.Report, {foreignKey: "TransactionId"})
     }
   }
   Transaction.init({
@@ -43,6 +44,11 @@ module.exports = (sequelize, DataTypes) => {
     destinationBankCode: DataTypes.STRING,
     fee: DataTypes.BIGINT,
   }, {
+    hooks: {
+      beforeCreate: (el) => {
+        el.id = uuidv4();
+      }
+    },
     sequelize,
     modelName: 'Transaction',
   });

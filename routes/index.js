@@ -8,8 +8,8 @@ router.post('/login', Controller.loginAccount)
 router.use(authentication)
 
 router.get('/account', Controller.getAccountDetail)
-router.post('/transaction', Controller.postTransaction)
+router.post('/transaction/intrabank', Controller.postTransaction)
+router.post('/transaction/payment', Controller.postPayment)
 router.get('/report', Controller.getReport)
-router.post('/report', Controller.postReport)
 
 module.exports = router
