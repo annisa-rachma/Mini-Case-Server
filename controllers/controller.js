@@ -163,7 +163,7 @@ class Controller {
           {
             AccountId,
             transactionType,
-            transactionDetail,
+            transactionDetail : "Biaya Admin",
             fromAccountNo,
             toAccountNo,
             amount : fee,
