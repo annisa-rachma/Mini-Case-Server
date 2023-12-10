@@ -56,14 +56,15 @@ class Controller {
   static async postTransaction(req, res, next) {
     const t = await sequelize.transaction();
     try {
-      const { transactionDetail, toAccountNo, amount } = req.body;
+      const { toAccountNo, amount } = req.body;
+
 
       const account = await Account.findOne({
         where: { CustomerId: req.user.id },
       });
       const AccountId = account.id;
       let currency = "IDR";
-
+      let transactionDetail = "Transfer Keluar" 
       let transactionType;
       let fromAccountNo;
       let trans
@@ -214,6 +215,8 @@ class Controller {
       let endingBalance = parseInt(account.balance);
       let openingBalance = parseInt(account.balance);
 
+      
+
       report.forEach((transaction) => {
         const amount = parseInt(transaction.amount);
 
@@ -225,6 +228,19 @@ class Controller {
           openingBalance = amount
         }
       });
+
+      if(startDate || endDate) {
+        endingBalance = openingBalance
+        report.forEach((transaction) => {
+          const amount = parseInt(transaction.amount);
+  
+          if (transaction.transactionType === "Kredit") {
+            endingBalance += amount;
+          } else if (transaction.transactionType === "Debet") {
+            endingBalance -= amount;
+          } 
+        });
+      }
 
       res.status(200).json({
         accountNo: account.accountNo,
