@@ -1,4 +1,4 @@
-# Lodging API Documentation
+# API Documentation
 
 ## Endpoints :
 
