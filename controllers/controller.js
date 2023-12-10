@@ -40,10 +40,13 @@ class Controller {
           {
             model: Customer,
             attributes: {
-              exclude: ["createdAt", "updatedAt", "password"],
+              exclude: ["createdAt", "updatedAt", "password",],
             },
           },
         ],
+        attributes: {
+          exclude: ["PIN"],
+        },
       });
 
       res.status(200).json(account);
@@ -144,7 +147,7 @@ class Controller {
       let currency = "IDR";
       let transactionType= "Debet";
       let fromAccountNo = account.accountNo;
-      // let trans
+      let transaction = []
 
       if(PIN == account.PIN) {
         await Account.update(
@@ -152,7 +155,7 @@ class Controller {
           { where: { id: account.id } },
           { transaction: t }
         );
-        await Transaction.create(
+        const bill = await Transaction.create(
           {
             AccountId,
             transactionType,
@@ -164,7 +167,7 @@ class Controller {
           },
           { transaction: t }
         );
-        await Transaction.create(
+        const adminFee = await Transaction.create(
           {
             AccountId,
             transactionType,
@@ -176,13 +179,15 @@ class Controller {
           },
           { transaction: t }
         );
+
+        transaction.push(bill, adminFee)
       } else {
         return res.status(401).json({message : "Invalid PIN"});
       }
       
 
       t.commit();
-      res.status(201).json({message : "Payment Success"});
+      res.status(201).json({message : "Payment Success", transaction});
     } catch (err) {
       console.log(err);
       t.rollback();
