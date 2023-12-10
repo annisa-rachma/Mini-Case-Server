@@ -65,8 +65,8 @@ class Controller {
       let currency = "IDR";
 
       let transactionType;
-      let accountUpdate;
       let fromAccountNo;
+      let trans
       if (toAccountNo == account.accountNo) {
         transactionType = "Kredit";
         fromAccountNo = "";
@@ -74,6 +74,19 @@ class Controller {
         await Account.update(
           { balance: account.balance + amount },
           { where: { accountNo: toAccountNo } },
+          { transaction: t }
+        );
+
+        trans = await Transaction.create(
+          {
+            AccountId,
+            transactionType,
+            transactionDetail,
+            fromAccountNo,
+            toAccountNo,
+            amount,
+            currency,
+          },
           { transaction: t }
         );
       } else {
@@ -85,20 +98,20 @@ class Controller {
           { where: { id: account.id } },
           { transaction: t }
         );
-      }
 
-      const trans = await Transaction.create(
-        {
-          AccountId,
-          transactionType,
-          transactionDetail,
-          fromAccountNo,
-          toAccountNo,
-          amount,
-          currency,
-        },
-        { transaction: t }
-      );
+        trans = await Transaction.create(
+          {
+            AccountId,
+            transactionType,
+            transactionDetail,
+            fromAccountNo,
+            toAccountNo,
+            amount,
+            currency,
+          },
+          { transaction: t }
+        );
+      }
 
       t.commit();
       res.status(201).json(trans);
@@ -109,7 +122,68 @@ class Controller {
     }
   }
 
-  static async postPayment(req, res, next) {}
+  static async postPayment(req, res, next) {
+    const t = await sequelize.transaction();
+    try {
+      const {  PIN } = req.body;
+      // console.log(PIN)
+      const toAccountNo = 'PLN'
+      const transactionDetail = "Pembayaran Listrik"
+      const amount = 5000000
+      const fee = 7500
+
+      const account = await Account.findOne({
+        where: { CustomerId: req.user.id },
+      });
+      const AccountId = account.id;
+      let currency = "IDR";
+      let transactionType= "Debet";
+      let fromAccountNo = account.accountNo;
+      // let trans
+
+      if(PIN == account.PIN) {
+        await Account.update(
+          { balance: account.balance - (amount + fee) },
+          { where: { id: account.id } },
+          { transaction: t }
+        );
+        await Transaction.create(
+          {
+            AccountId,
+            transactionType,
+            transactionDetail,
+            fromAccountNo,
+            toAccountNo,
+            amount,
+            currency,
+          },
+          { transaction: t }
+        );
+        await Transaction.create(
+          {
+            AccountId,
+            transactionType,
+            transactionDetail,
+            fromAccountNo,
+            toAccountNo,
+            amount : fee,
+            currency,
+          },
+          { transaction: t }
+        );
+      } else {
+        return res.status(401).json({message : "Invalid PIN"});
+      }
+      
+
+      t.commit();
+      res.status(201).json({message : "Payment Success"});
+    } catch (err) {
+      console.log(err);
+      t.rollback();
+      next(err);
+    }
+  }
 
   static async getReport(req, res, next) {
     try {
