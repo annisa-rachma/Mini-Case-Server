@@ -63,7 +63,7 @@ class Controller {
       });
       const AccountId = account.id;
       let currency = "IDR";
-      let transactionDetail = "Transfer Keluar" 
+      let transactionDetail  
       let transactionType;
       let fromAccountNo;
       let trans
@@ -72,9 +72,9 @@ class Controller {
         if (toAccountNo == account.accountNo) {
           transactionType = "Kredit";
           fromAccountNo = "";
-  
+          transactionDetail = "Transfer Masuk"
           await Account.update(
-            { balance: account.balance + amount },
+            { balance: Number(account.balance) + Number(amount) },
             { where: { accountNo: toAccountNo } },
             { transaction: t }
           );
@@ -94,9 +94,9 @@ class Controller {
         } else {
           transactionType = "Debet";
           fromAccountNo = account.accountNo;
-  
+          transactionDetail = "Transfer Keluar"
           await Account.update(
-            { balance: account.balance - amount },
+            { balance: Number(account.balance) - Number(amount) },
             { where: { id: account.id } },
             { transaction: t }
           );
