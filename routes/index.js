@@ -8,7 +8,7 @@ router.post('/login', Controller.loginAccount)
 router.use(authentication)
 
 router.get('/account', Controller.getAccountDetail)
-router.post('/transaction/intrabank', Controller.postTransaction)
+router.post('/transaction/transfer', Controller.postTransaction)
 router.post('/transaction/payment', Controller.postPayment)
 router.get('/report', Controller.getReport)
 

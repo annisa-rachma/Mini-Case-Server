@@ -56,8 +56,7 @@ class Controller {
   static async postTransaction(req, res, next) {
     const t = await sequelize.transaction();
     try {
-      const { toAccountNo, amount } = req.body;
-
+      const { toAccountNo, amount, PIN } = req.body;
 
       const account = await Account.findOne({
         where: { CustomerId: req.user.id },
@@ -68,50 +67,55 @@ class Controller {
       let transactionType;
       let fromAccountNo;
       let trans
-      if (toAccountNo == account.accountNo) {
-        transactionType = "Kredit";
-        fromAccountNo = "";
 
-        await Account.update(
-          { balance: account.balance + amount },
-          { where: { accountNo: toAccountNo } },
-          { transaction: t }
-        );
-
-        trans = await Transaction.create(
-          {
-            AccountId,
-            transactionType,
-            transactionDetail,
-            fromAccountNo,
-            toAccountNo,
-            amount,
-            currency,
-          },
-          { transaction: t }
-        );
+      if(PIN == account.PIN) {
+        if (toAccountNo == account.accountNo) {
+          transactionType = "Kredit";
+          fromAccountNo = "";
+  
+          await Account.update(
+            { balance: account.balance + amount },
+            { where: { accountNo: toAccountNo } },
+            { transaction: t }
+          );
+  
+          trans = await Transaction.create(
+            {
+              AccountId,
+              transactionType,
+              transactionDetail,
+              fromAccountNo,
+              toAccountNo,
+              amount,
+              currency,
+            },
+            { transaction: t }
+          );
+        } else {
+          transactionType = "Debet";
+          fromAccountNo = account.accountNo;
+  
+          await Account.update(
+            { balance: account.balance - amount },
+            { where: { id: account.id } },
+            { transaction: t }
+          );
+  
+          trans = await Transaction.create(
+            {
+              AccountId,
+              transactionType,
+              transactionDetail,
+              fromAccountNo,
+              toAccountNo,
+              amount,
+              currency,
+            },
+            { transaction: t }
+          );
+        }
       } else {
-        transactionType = "Debet";
-        fromAccountNo = account.accountNo;
-
-        await Account.update(
-          { balance: account.balance - amount },
-          { where: { id: account.id } },
-          { transaction: t }
-        );
-
-        trans = await Transaction.create(
-          {
-            AccountId,
-            transactionType,
-            transactionDetail,
-            fromAccountNo,
-            toAccountNo,
-            amount,
-            currency,
-          },
-          { transaction: t }
-        );
+        return res.status(401).json({message : "Invalid PIN"});
       }
 
       t.commit();
