@@ -56,61 +56,66 @@ class Controller {
   static async postTransaction(req, res, next) {
     const t = await sequelize.transaction();
     try {
-      const { transactionDetail, toAccountNo, amount } = req.body;
+      const { toAccountNo, amount, PIN } = req.body;
 
       const account = await Account.findOne({
         where: { CustomerId: req.user.id },
       });
       const AccountId = account.id;
       let currency = "IDR";
-
+      let transactionDetail = "Transfer Keluar" 
       let transactionType;
       let fromAccountNo;
       let trans
-      if (toAccountNo == account.accountNo) {
-        transactionType = "Kredit";
-        fromAccountNo = "";
 
-        await Account.update(
-          { balance: account.balance + amount },
-          { where: { accountNo: toAccountNo } },
-          { transaction: t }
-        );
-
-        trans = await Transaction.create(
-          {
-            AccountId,
-            transactionType,
-            transactionDetail,
-            fromAccountNo,
-            toAccountNo,
-            amount,
-            currency,
-          },
-          { transaction: t }
-        );
+      if(PIN == account.PIN) {
+        if (toAccountNo == account.accountNo) {
+          transactionType = "Kredit";
+          fromAccountNo = "";
+  
+          await Account.update(
+            { balance: account.balance + amount },
+            { where: { accountNo: toAccountNo } },
+            { transaction: t }
+          );
+  
+          trans = await Transaction.create(
+            {
+              AccountId,
+              transactionType,
+              transactionDetail,
+              fromAccountNo,
+              toAccountNo,
+              amount,
+              currency,
+            },
+            { transaction: t }
+          );
+        } else {
+          transactionType = "Debet";
+          fromAccountNo = account.accountNo;
+  
+          await Account.update(
+            { balance: account.balance - amount },
+            { where: { id: account.id } },
+            { transaction: t }
+          );
+  
+          trans = await Transaction.create(
+            {
+              AccountId,
+              transactionType,
+              transactionDetail,
+              fromAccountNo,
+              toAccountNo,
+              amount,
+              currency,
+            },
+            { transaction: t }
+          );
+        }
       } else {
-        transactionType = "Debet";
-        fromAccountNo = account.accountNo;
-
-        await Account.update(
-          { balance: account.balance - amount },
-          { where: { id: account.id } },
-          { transaction: t }
-        );
-
-        trans = await Transaction.create(
-          {
-            AccountId,
-            transactionType,
-            transactionDetail,
-            fromAccountNo,
-            toAccountNo,
-            amount,
-            currency,
-          },
-          { transaction: t }
-        );
+        return res.status(401).json({message : "Invalid PIN"});
       }
 
       t.commit();
@@ -163,7 +168,7 @@ class Controller {
           {
             AccountId,
             transactionType,
-            transactionDetail,
+            transactionDetail : "Biaya Admin",
             fromAccountNo,
             toAccountNo,
             amount : fee,
@@ -214,6 +219,8 @@ class Controller {
       let endingBalance = parseInt(account.balance);
       let openingBalance = parseInt(account.balance);
 
+      
+
       report.forEach((transaction) => {
         const amount = parseInt(transaction.amount);
 
@@ -225,6 +232,19 @@ class Controller {
           openingBalance = amount
         }
       });
+
+      if(startDate || endDate) {
+        endingBalance = openingBalance
+        report.forEach((transaction) => {
+          const amount = parseInt(transaction.amount);
+  
+          if (transaction.transactionType === "Kredit") {
+            endingBalance += amount;
+          } else if (transaction.transactionType === "Debet") {
+            endingBalance -= amount;
+          } 
+        });
+      }
 
       res.status(200).json({
         accountNo: account.accountNo,
