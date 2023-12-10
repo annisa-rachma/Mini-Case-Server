@@ -8,6 +8,7 @@ const {
 const { hashPassword, comparePassword } = require("../helper/bcrypt");
 const { signToken, verifyToken } = require("../helper/jwt");
 const { Op } = require("sequelize");
+const { stringToDate } = require("../helper/stringToDate");
 
 class Controller {
   static async loginAccount(req, res, next) {
@@ -116,6 +117,7 @@ class Controller {
         where: { CustomerId: req.user.id },
       });
       const { startDate, endDate } = req.query;
+
       let periode;
       let option = {
         where: {
@@ -127,7 +129,7 @@ class Controller {
       if (startDate || endDate) {
         periode = `${startDate} - ${endDate}`;
         option.where.createdAt = {
-          [Op.between]: [startDate, endDate],
+          [Op.between]: [stringToDate(startDate), stringToDate(endDate)],
         };
       } else {
         periode = "Semua";
@@ -145,6 +147,8 @@ class Controller {
           openingBalance -= amount;
         } else if (transaction.transactionType === "Debet") {
           openingBalance += amount;
+        } else {
+          openingBalance = amount
         }
       });
 
